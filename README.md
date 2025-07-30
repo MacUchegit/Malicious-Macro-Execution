@@ -1,3 +1,5 @@
+<img width="1536" height="1024" alt="32548961-00a7-4165-aa13-891da4ab8b65" src="https://github.com/user-attachments/assets/3f2e5343-743c-4f98-ab59-bad9ef153d18" />
+
 # 🕵️‍♂️ Project Walkthrough: Investigating a Malicious Macro Execution Using Let’s Defend SIEM
 
 ### 🎯 **Purpose of the Analysis**
